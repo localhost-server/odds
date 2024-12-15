@@ -1,0 +1,9 @@
+{
+  "s": 1,
+  "d": {
+    "total": 0,
+    "nullResultText": "Unfortunately, no matches can be displayed because there are no odds available from your selected bookmakers.",
+    "paginationView": ""
+  },
+  "refresh": 20
+}

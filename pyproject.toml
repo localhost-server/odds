@@ -1,0 +1,14 @@
+[project]
+name = "oddsportal"
+version = "0.1.4"
+description = "A package for scraping odds data from https://www.oddsportal.com/"
+readme = "README.md"
+dependencies = [
+  'requests',
+  'beautifulsoup4',
+  'tenacity',
+  'lxml',
+]
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
