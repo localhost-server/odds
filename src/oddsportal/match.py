@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from urllib.parse import unquote, urlparse
 import json
 import datetime
+from dateutil import parser
 import logging
 from pathlib import Path
 from .team import Team
@@ -40,7 +41,21 @@ class Match():
         id = str(Path(urlparse(url).path))
         event_id = data['eventData']['id']
         sport_id = data['eventData']['sportId']
-        timestamp_utc = datetime.datetime.utcfromtimestamp(data['eventBody']['startDate'])
+
+        print("HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
+        # dateString = data['eventBody']['startDate'].replace("&nbsp;", " ").replace("Today, ", "").replace("Tomorrow, ", "")
+        # print(dateString)
+        start_date = data['eventBody']['startDate']
+        if isinstance(start_date, int):
+            timestamp_utc = datetime.datetime.utcfromtimestamp(start_date)
+        else:
+            start_date_str = BeautifulSoup(start_date, 'html.parser').get_text()
+            start_date_str = start_date_str.replace('\xa0', ' ').replace('Today, ', '').replace('Tomorrow, ', '')
+            timestamp_utc = parser.parse(start_date_str)
+
+        print("HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
+
+        # timestamp_utc = parser.parse(dateString)
         timestamp_utc = timestamp_utc.replace(tzinfo=datetime.timezone.utc)
         local_timezone = datetime.timezone(datetime.timedelta(hours=-5))
         timestamp_local = timestamp_utc.astimezone(local_timezone)
@@ -65,10 +80,12 @@ class Match():
     def get_odds_url(self, bet):
         prefix = 'https://www.oddsportal.com/feed/match-event/'
         url = f'{prefix}1-{self.sport_id}-{self.event_id}-{bet_types[bet[0]]["id"]}-{bet[1]}-{self.xhash}.dat'
+        print('UUUUUUUUUURRRRRRRRRRRRRRLLLLLLLLLLLLLLLL :', url)
         return url
 
     def get_odds(self, bet):
         logger.info(f'Scraping bet type {bet} for {self.id}')
+
         url = self.get_odds_url(bet)
         result = get(url, xhr=True)
         if not result:
@@ -77,6 +94,9 @@ class Match():
         else:
             if "{'e':'404'}" in result:
                 logger.error('404 Client Error: Not Found')
+            print("HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR")
+            # print(result)
+            print("HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR")
             result = json.loads(result)
             result = result.get('d').get('oddsdata')
         return result

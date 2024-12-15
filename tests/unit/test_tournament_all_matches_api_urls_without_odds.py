@@ -16,4 +16,5 @@ def tournament():
 def test_all_matches_api_urls_without_odds(tournament):
     expected = None
     result = tournament.all_matches_api_urls('2023')
+    print("HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
     assert result == expected

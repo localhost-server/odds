@@ -52,3 +52,9 @@ playwright install
 Run the `master.R` script from within Rstudio. 
 
 You should see a `odds-data-table.html` saved in the `data/` folder.
+
+issue with :
+pytest tests/integration/test_match_get_odds.py
+pytest tests/integration/test_average_odds.py
+pytest tests/integration/test_match_handicap_with_tightest_spread.py
+pytest tests/integration/test_tournament.py 

@@ -1,3 +1,5 @@
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning, module='bs4.builder._lxml')
 import datetime
 from bs4 import BeautifulSoup
 from functools import cached_property, cache
@@ -9,6 +11,7 @@ import json
 import re
 import math
 import logging
+
 
 user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36"
 
@@ -90,9 +93,12 @@ class Tournament():
             for elem in soup.find_all('script') 
             if elem.string and 'var pageOutrightsVar' in elem.string
         ][0]
-        
-        script = re.search(r'var pageOutrightsVar = \'(.+)\';', scripts.string)
+        print("HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
+        # script = re.search(r'var pageOutrightsVar = \'(.+)\';', scripts.string)
+        script = re.search(r'var pageOutrightsVar = Object\.assign\(JSON\.parse\(pageVar\), JSON\.parse\(\'({.+})\'\)\);', scripts.string)
+        print(script)
         page_outrights_var = json.loads(script.group(1).removeprefix("\'").removesuffix("\'"))
+        print("HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
         
         url = f"https://www.oddsportal.com/ajax-sport-country-tournament-archive_/{page_outrights_var['sid']}/{page_outrights_var['id']}/{self.bookiehash}/1/0/"
 
